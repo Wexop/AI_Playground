@@ -208,10 +208,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 44
+    VectorObservationSize: 62
     NumStackedVectorObservations: 1
     m_ActionSpec:
-      m_NumContinuousActions: 5
+      m_NumContinuousActions: 7
       BranchSizes: 01000000
     VectorActionSize: 
     VectorActionDescriptions: []
@@ -258,10 +258,13 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
   walls: []
+  badBlocks: []
   rb: {fileID: 1956228644585031905}
   attackBehavior: {fileID: 6612215572240477148}
   target: {fileID: 0}
+  killStreak: 0
   attackTime: 0
+  jumpTime: 0
   dashTime: 0
   inDashTime: 0
   time: 0

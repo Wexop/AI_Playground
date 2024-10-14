@@ -11,8 +11,13 @@ public class AttackBehavior : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            agentFight.AddReward(3f);
+            
+            AgentFight playerFight = other.gameObject.GetComponent<AgentFight>();
+            
+            agentFight.killStreak++;
+            agentFight.AddReward(3f + ((float)agentFight.killStreak / 2) + ((float) playerFight.killStreak / 2));
             agentFight.time = agentFight.initialTime;
+            
         }
     }
 }

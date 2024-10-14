@@ -10,17 +10,24 @@ using Random = UnityEngine.Random;
 public class AgentFight : Agent
 {
     public List<Transform> walls;
+    public List<Transform> badBlocks;
     
     public Rigidbody rb;
 
     public AttackBehavior attackBehavior;
     
     public AgentFight target;
+
+    public int killStreak;
     
     private RaycastHit hit = new RaycastHit();
 
     public float attackTime;
     private float attackCD = 2f;
+
+
+    public float jumpTime;
+    private float jumpCD = 3f;
 
     public float dashTime;
     public float inDashTime;
@@ -44,6 +51,7 @@ public class AgentFight : Agent
         attackTime -= Time.deltaTime;
         dashTime -= Time.deltaTime;
         inDashTime -= Time.deltaTime;
+        jumpTime -= Time.deltaTime;
         
         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
         
@@ -80,7 +88,10 @@ public class AgentFight : Agent
         transform.localPosition = new Vector3(Random.Range(-10f, 10f), 1.74f, Random.Range(-10f, 10f));
         attackTime = attackCD;
         dashTime = dashCD;
+        jumpTime = jumpCD;
         time = initialTime;
+
+        killStreak = 0;
 
     }
 
@@ -89,11 +100,19 @@ public class AgentFight : Agent
         
         sensor.AddObservation(rb.velocity.x);
         sensor.AddObservation(rb.velocity.z);
+        sensor.AddObservation(rb.velocity.y);
+        
+        sensor.AddObservation(killStreak);
+        sensor.AddObservation(target.killStreak);
         
         sensor.AddObservation(dashTime);
         sensor.AddObservation(dashCD);
         sensor.AddObservation(inDashTime);
         sensor.AddObservation(target.dashTime);
+        
+        sensor.AddObservation(jumpTime);
+        sensor.AddObservation(jumpCD);
+        sensor.AddObservation(target.jumpTime);
         
         sensor.AddObservation(time);
         
@@ -121,6 +140,11 @@ public class AgentFight : Agent
         {
             sensor.AddObservation(wall.localPosition);
         });
+        badBlocks.ForEach(b =>
+        {
+            sensor.AddObservation(b.localPosition);
+            sensor.AddObservation(Vector3.Distance(transform.localPosition, b.localPosition));
+        });
         
     }
 
@@ -128,15 +152,18 @@ public class AgentFight : Agent
     {
         float moveX = actions.ContinuousActions[0];
         float moveZ = actions.ContinuousActions[1];
-        float rotate = actions.ContinuousActions[2];
-        float attack = actions.ContinuousActions[3];
-        float dash = actions.ContinuousActions[4];
+        float rotateL = actions.ContinuousActions[2];
+        float rotateR = actions.ContinuousActions[3];
+        float attack = actions.ContinuousActions[4];
+        float dash = actions.ContinuousActions[5];
+        float jump = actions.ContinuousActions[6];
         float moveSpeed = 10f;
         float rotateSpeed = 10f;
+        float jumpForce = 8f;
         
-        rb.velocity = new Vector3(moveX, 0f, moveZ) * moveSpeed;
+        rb.velocity = new Vector3(moveX * moveSpeed, rb.velocity.y, moveZ * moveSpeed) ;
         
-        transform.eulerAngles += new Vector3(0f, rotate, 0f) * rotateSpeed;
+        transform.eulerAngles += new Vector3(0f, rotateL - rotateR, 0f) * rotateSpeed;
 
         if (attack > 0 && attackTime < 0)
         {
@@ -149,6 +176,12 @@ public class AgentFight : Agent
             dashTime = dashCD;
             inDashTime = 0.2f;
         }
+
+        if (jump > 0 && jumpTime < 0)
+        {
+            jumpTime = jumpCD;
+            rb.velocity = new Vector3(rb.velocity.x,jumpForce, rb.velocity.z);
+        }
         
     }
 
@@ -159,15 +192,17 @@ public class AgentFight : Agent
         actions[0] = Input.GetAxisRaw("Horizontal");
         actions[1] = Input.GetAxisRaw("Vertical");
         actions[2] = Input.GetKey(KeyCode.R) ? 1f : 0f;
-        actions[3] = Input.GetKey(KeyCode.Space) ? 1f : 0f;
-        actions[4] = Input.GetKey(KeyCode.E) ? 1f : 0f;
+        actions[3] = Input.GetKey(KeyCode.T) ? 1f : 0f;
+        actions[4] = Input.GetKey(KeyCode.Space) ? 1f : 0f;
+        actions[5] = Input.GetKey(KeyCode.E) ? 1f : 0f;
+        actions[6] = Input.GetKey(KeyCode.F) ? 1f : 0f;
         
     }
 
     private void OnTriggerEnter(Collider other)
     {
         
-        if (other.CompareTag("wall"))
+        if (other.CompareTag("wall") || other.CompareTag("obstacle"))
         {
             AddReward(-1f);
             EndEpisode();

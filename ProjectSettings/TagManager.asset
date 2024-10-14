@@ -7,6 +7,7 @@ TagManager:
   - target
   - wall
   - attack
+  - obstacle
   layers:
   - Default
   - TransparentFX
