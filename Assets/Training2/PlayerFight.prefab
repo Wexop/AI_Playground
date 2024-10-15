@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 62
+    VectorObservationSize: 96
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 7
@@ -261,7 +261,7 @@ MonoBehaviour:
   badBlocks: []
   rb: {fileID: 1956228644585031905}
   attackBehavior: {fileID: 6612215572240477148}
-  target: {fileID: 0}
+  targets: []
   killStreak: 0
   attackTime: 0
   jumpTime: 0

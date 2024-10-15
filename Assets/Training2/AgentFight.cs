@@ -16,7 +16,7 @@ public class AgentFight : Agent
 
     public AttackBehavior attackBehavior;
     
-    public AgentFight target;
+    public List<AgentFight> targets;
 
     public int killStreak;
     
@@ -103,33 +103,27 @@ public class AgentFight : Agent
         sensor.AddObservation(rb.velocity.y);
         
         sensor.AddObservation(killStreak);
-        sensor.AddObservation(target.killStreak);
         
         sensor.AddObservation(dashTime);
         sensor.AddObservation(dashCD);
         sensor.AddObservation(inDashTime);
-        sensor.AddObservation(target.dashTime);
         
         sensor.AddObservation(jumpTime);
         sensor.AddObservation(jumpCD);
-        sensor.AddObservation(target.jumpTime);
         
         sensor.AddObservation(time);
         
-        sensor.AddObservation(Vector3.Distance(transform.localPosition, target.transform.localPosition));
         
         sensor.AddObservation(transform.localPosition);
         sensor.AddObservation(transform.localRotation);
         sensor.AddObservation(attackBehavior.transform.localPosition);
         
-        sensor.AddObservation(target.transform.localPosition);
-        sensor.AddObservation(target.transform.localRotation);
-        sensor.AddObservation(target.attackTime);
+
         
         sensor.AddObservation(attackCD);
         sensor.AddObservation(attackTime);
         sensor.AddObservation(attackBehavior.enabled);
-        sensor.AddObservation(target.attackBehavior.enabled);
+
 
         sensor.AddObservation(hit.distance);
         sensor.AddObservation( hit.rigidbody && hit.rigidbody.CompareTag("Player"));
@@ -140,10 +134,23 @@ public class AgentFight : Agent
         {
             sensor.AddObservation(wall.localPosition);
         });
+        
         badBlocks.ForEach(b =>
         {
             sensor.AddObservation(b.localPosition);
             sensor.AddObservation(Vector3.Distance(transform.localPosition, b.localPosition));
+        });
+        
+        targets.ForEach(target =>
+        {
+            sensor.AddObservation(target.attackBehavior.enabled);
+            sensor.AddObservation(target.transform.localPosition);
+            sensor.AddObservation(target.transform.localRotation);
+            sensor.AddObservation(target.attackTime);
+            sensor.AddObservation(Vector3.Distance(transform.localPosition, target.transform.localPosition));
+            sensor.AddObservation(target.jumpTime);
+            sensor.AddObservation(target.dashTime);
+            sensor.AddObservation(target.killStreak);
         });
         
     }
@@ -202,12 +209,12 @@ public class AgentFight : Agent
     private void OnTriggerEnter(Collider other)
     {
         
-        if (other.CompareTag("wall") || other.CompareTag("obstacle"))
+        if (other.CompareTag("wall") )
         {
             AddReward(-1f);
             EndEpisode();
         }
-        if (other.CompareTag("attack"))
+        if (other.CompareTag("attack") || other.CompareTag("obstacle"))
         {
             AddReward(-2f);
             EndEpisode();

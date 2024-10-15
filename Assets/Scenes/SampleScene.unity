@@ -862,7 +862,15 @@ PrefabInstance:
     - target: {fileID: 2416360057854593015, guid: 16768a4cb960ee64fb8f222c54e026e3, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5022602860645237092, guid: 99cdb1a6fac291542a40f64ceea4f300, type: 3}
+    - target: {fileID: 2761477667818195477, guid: 16768a4cb960ee64fb8f222c54e026e3, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 99cdb1a6fac291542a40f64ceea4f300, type: 3}
+    - target: {fileID: 2944112499446404856, guid: 16768a4cb960ee64fb8f222c54e026e3, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 99cdb1a6fac291542a40f64ceea4f300, type: 3}
     - target: {fileID: 4072302110451364713, guid: 16768a4cb960ee64fb8f222c54e026e3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -906,7 +914,7 @@ PrefabInstance:
     - target: {fileID: 7045671374215424394, guid: 16768a4cb960ee64fb8f222c54e026e3, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5022602860645237092, guid: 99cdb1a6fac291542a40f64ceea4f300, type: 3}
     - target: {fileID: 8953464247915560833, guid: 16768a4cb960ee64fb8f222c54e026e3, type: 3}
       propertyPath: m_Name
       value: Training2
